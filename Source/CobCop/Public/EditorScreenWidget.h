@@ -3,7 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#if WITH_EDITOR
 #include "SLevelViewport.h"
+#endif
+
 #include "Widgets/SWidget.h"
 #include "Components/WidgetComponent.h"
 #include "UnrealClient.h"
@@ -29,7 +33,10 @@ public:
 	virtual void Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime) override;
 
 private:
+
+#if WITH_EDITOR
 	TSharedPtr<SLevelViewport> EditorViewport;
+#endif
 
 	bool GetProjectionData(FViewport* Viewport, FSceneViewProjectionData& ProjectionData) const;
 
