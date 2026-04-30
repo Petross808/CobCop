@@ -2,8 +2,12 @@
 
 
 #include "EditorScreenWidget.h"
+
+#if WITH_EDITOR
 #include "ILevelEditor.h"
 #include "LevelEditorViewport.h"
+#endif
+
 #include "SceneViewExtension.h"
 #include "Blueprint/SlateBlueprintLibrary.h"
 #include "Layout/Geometry.h"
@@ -32,6 +36,8 @@ void AEditorScreenWidget::Construct(const FArguments& InArgs)
 
 void AEditorScreenWidget::Initialize()
 {
+#if WITH_EDITOR
+
 	if (GEngine == nullptr) return;
 
 	FLevelEditorViewportClient* current = GCurrentLevelEditingViewportClient;
@@ -55,15 +61,18 @@ void AEditorScreenWidget::Initialize()
 	if (!EditorViewport.IsValid()) return;
 
 	EditorViewport->AddOverlayWidget(this->AsShared());
+
+#endif
 }
 
 void AEditorScreenWidget::Dispose()
 {
+#if WITH_EDITOR
 	if (EditorViewport.IsValid())
 	{
 		EditorViewport->RemoveOverlayWidget(this->AsShared());
 	}
-
+#endif
 	Canvas.Reset();
 	ComponentMap.Reset();
 }
@@ -126,8 +135,10 @@ bool AEditorScreenWidget::GetProjectionData(FViewport* Viewport, FSceneViewProje
 
 	FMinimalViewInfo viewInfo;
 
+#if WITH_EDITOR
 	viewInfo.Location = EditorViewport->GetViewportClient()->GetViewLocation();
 	viewInfo.Rotation = EditorViewport->GetViewportClient()->GetViewRotation();
+#endif
 
 	// Create the view matrix
 	ProjectionData.ViewOrigin = viewInfo.Location;
@@ -191,6 +202,7 @@ void AEditorScreenWidget::RemoveEntryFromCanvas(AEditorScreenWidget::FComponentE
 
 void AEditorScreenWidget::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)
 {
+#if WITH_EDITOR
 	if (!EditorViewport.IsValid()) return;
 
 	const FGeometry& viewportGeometry = EditorViewport->GetPaintSpaceGeometry();
@@ -290,4 +302,5 @@ void AEditorScreenWidget::Tick(const FGeometry& AllottedGeometry, const double I
 			continue;
 		}
 	}
+#endif
 }
